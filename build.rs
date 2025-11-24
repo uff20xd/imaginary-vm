@@ -6,7 +6,8 @@ fn main() {
     ]);
 
     //let alloc = Mcule::new("allocator", "")
-    let vm = Mcule::new("vm-imaginary", "vm-imaginary")
+    let _vm = Mcule::new("vm-imaginary", "vm-imaginary")
+        .with(&["src/main.rs".into()])
         .add_step(&["rustc", "src/main.rs", "-o", "$out"])
         .compile();
 }
