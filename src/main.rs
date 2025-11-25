@@ -62,7 +62,6 @@ impl Const {
 
 type ConstPool = Vec<Const>;
 
-
 struct Memory<const SIZE: usize> {
     memory: [Bucket; SIZE],
 }
