@@ -46,7 +46,7 @@ enum Const {
     TypeAndNameIndex(u16),
     StringIndex(u16),
     DescIndex(u16),
-    ClassIndex(u16),
+  e ClassIndex(u16),
 }
 impl Const {
     pub fn parse(loader: &ProgrammLoader) -> Result<Self, VmError> {
