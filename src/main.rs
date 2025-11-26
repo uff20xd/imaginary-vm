@@ -1,21 +1,31 @@
-fn main() {
+use std::fs;
+use std::io::Read;
+use std::path::Path;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let vm = VmImaginary::<256>::new();
     let bucket = Bucket::default();
-    dbg!(bucket);
+    let mut programm_loader = ProgrammLoader::new("tests/Add.class")?;
+    dbg!(&programm_loader);
+    dbg!(programm_loader.get_next_bytes(2));
+    dbg!(programm_loader.get_next_bytes(2));
+    Ok(())
 }
 
 type VmError = String;
 
 type Byte = u8;
 
+#[derive(Debug, Clone)]
 struct ProgrammLoader {
     bytes: Vec<Byte>,
     counter: usize,
 }
 
 impl ProgrammLoader{
-    pub fn new() -> Result<Self, std::io::Error> { 
+    pub fn new<P: AsRef<Path>>(file_name: P) -> Result<Self, std::io::Error> { 
         let mut bytes = Vec::new();
+        let mut file = fs::File::open(file_name)?;
+        _ = file.read_to_end(&mut bytes);
         Ok(Self{
             bytes,
             counter: 0,
@@ -46,7 +56,7 @@ enum Const {
     TypeAndNameIndex(u16),
     StringIndex(u16),
     DescIndex(u16),
-  e ClassIndex(u16),
+    ClassIndex(u16),
 }
 impl Const {
     pub fn parse(loader: &ProgrammLoader) -> Result<Self, VmError> {
