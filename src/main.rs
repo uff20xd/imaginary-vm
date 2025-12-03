@@ -9,6 +9,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     dbg!(&programm_loader);
     dbg!(programm_loader.get_next_bytes(2));
     dbg!(programm_loader.get_next_bytes(2));
+    dbg!(programm_loader.get_next_bytes_as_usize(2));
     Ok(())
 }
 
@@ -42,7 +43,12 @@ impl ProgrammLoader{
         teva
     }
     fn get_next_bytes_as_usize(&mut self, n: usize) -> usize {
-        let id_bytes = <[u8; 8]>::try_from(self.get_next_bytes(n)).unwrap();
+        let bytes = self.get_next_bytes(n);
+        let mut array_of_bytes: [Byte; 8] = [0; 8];
+        let bytes_len = bytes.len();
+        for i in 0..bytes_len {
+
+        }
         let num: usize = usize::from_le_bytes(id_bytes);
         num
     }
@@ -60,14 +66,16 @@ impl ProgrammLoader{
         let mut c = Const::default();
         match tag {
             0x01 => {
-                c.String = String::from(self.get_next_bytes());
+                let len = self.get_next_bytes_as_usize(2);
+                c.string = str::from_utf8(self.get_next_bytes(len)).unwrap().to_owned();
             },
             0x07 => {todo!()},
             0x08 => {todo!()},
-            0x09 || 0x0a => {todo!()},
+            0x09 | 0x0a => {todo!()},
             0x0c => {todo!()},
             _ => {panic!("Fuck you")},
         }
+        c
     }
 }
 
@@ -107,8 +115,8 @@ impl Const {
         todo!()
     }
     pub fn get_str(&self) -> Result<String, VmError> {
-        match self {
-            Const::String(str) => {return Ok(str.clone())},
+        match self.tag {
+            ConstTag::String => {return Ok(self.string.clone())},
             _ => {return Err("Not a String in Const::get_str".to_owned())},
         }
     }
