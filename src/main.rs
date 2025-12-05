@@ -8,7 +8,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut programm_loader = ProgrammLoader::new("tests/Add.class")?;
     dbg!(&programm_loader);
     dbg!(programm_loader.get_next_bytes(2));
-    dbg!(programm_loader.get_next_bytes(2));
     dbg!(programm_loader.get_next_bytes_as_usize(2));
     Ok(())
 }
@@ -44,10 +43,10 @@ impl ProgrammLoader{
     }
     fn get_next_bytes_as_usize(&mut self, n: usize) -> usize {
         let bytes = self.get_next_bytes(n);
-        let mut array_of_bytes: [Byte; 8] = [0; 8];
+        let mut id_bytes: [Byte; 8] = [0; 8];
         let bytes_len = bytes.len();
         for i in 0..bytes_len {
-
+            id_bytes[bytes_len - i - 1] = bytes[i];
         }
         let num: usize = usize::from_le_bytes(id_bytes);
         num
